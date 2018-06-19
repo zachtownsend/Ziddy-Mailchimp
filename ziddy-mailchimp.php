@@ -13,3 +13,13 @@
  */
 
 // Your code starts here.
+
+/**
+ * The slug of the plugin to be used throughout
+ */
+define( 'PLUGIN_SLUG', 'ziddy-mailchimp' );
+
+/**
+ * Define version number
+ */
+define( 'ZIDDY_MAILCHIMP_VERSION', '0.0.0' );
