@@ -17,8 +17,8 @@ class SampleTest extends WP_UnitTestCase {
 		// Replace this with some actual testing code.
 		$this->assertTrue( true );
 
-		$this->assertEquals( PLUGIN_SLUG, 'ziddy-mailchimp' );
+		$this->assertEquals( ZIDDY_MAILCHIMP_SLUG, 'ziddy-mailchimp' );
 
-		$this->assertEquals( ZIDDY_MAILCHIMP_VERSION, '0.0.0' );
+		$this->assertEquals( ZIDDY_MAILCHIMP_VERSION, '0.1.0' );
 	}
 }

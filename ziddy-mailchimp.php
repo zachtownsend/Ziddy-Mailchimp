@@ -11,15 +11,40 @@
  *
  * @package         Ziddy_Mailchimp
  */
-
-// Your code starts here.
+/**
+ * ================
+ * Plugin Constants
+ * ================
+ */
 
 /**
- * The slug of the plugin to be used throughout
+ * The plugin slug
  */
-define( 'PLUGIN_SLUG', 'ziddy-mailchimp' );
+define( 'ZIDDY_MAILCHIMP_SLUG', 'ziddy-mailchimp' );
 
 /**
- * Define version number
+ * Plugin version
  */
-define( 'ZIDDY_MAILCHIMP_VERSION', '0.0.0' );
+define( 'ZIDDY_MAILCHIMP_VERSION', '0.1.0' );
+
+/**
+ * ============
+ * Dependencies
+ * ============
+ */
+require_once 'includes/class-ziddy-mailchimp.php';
+
+/**
+ * Begins execution of the plugin.
+ *
+ * Since everything within the plugin is registered via hooks,
+ * then kicking off the plugin from this point in the file does
+ * not affect the page life cycle.
+ *
+ * @since    1.0.0
+ */
+function run_ziddy_mailchimp() {
+	$plugin = new Ziddy_Mailchimp();
+	$plugin->run();
+}
+run_ziddy_mailchimp();
