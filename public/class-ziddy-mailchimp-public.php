@@ -19,11 +19,19 @@ class Ziddy_Mailchimp_Public {
 		$this->MailChimp = new Mailchimp( $this->api_key );
 	}
 
-	public function add_user_to_list() {
-		$result = $this->MailChimp->post("lists/$this->list_id/members", [
-			'email_address' => 'zach@zachtownsend.net',
-			'status' => 'subscribed'
-		]);
+	public function add_user_to_list( $email_address, $args = [] ) {
+		$params = array_merge( [
+			'email_address' => $email_address,
+			'status' => 'subscribed',
+		], $args );
+
+		$result = $this->MailChimp->post("lists/$this->list_id/members", $params);
+
+		if ( ! isset( $result['email_address'] ) ) {
+			$error_message = "${result['title']} - ${result['detail']}";
+			$error_message = apply_filters( 'ziddy_mailchimp_error_message', $error_message, $result['title'], $result['detail'] );
+			$result = new WP_Error( 'member-exists', $error_message );
+		}
 
 		return $result;
 	}
