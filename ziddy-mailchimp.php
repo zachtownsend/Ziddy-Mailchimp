@@ -28,10 +28,16 @@ define( 'ZIDDY_MAILCHIMP_SLUG', 'ziddy-mailchimp' );
 define( 'ZIDDY_MAILCHIMP_VERSION', '0.1.0' );
 
 /**
+ * Plugin root path
+ */
+define( 'ZIDDY_MAILCHIMP_PLUGIN_ROOT', plugin_dir_path( dirname( __FILE__ ) ) . 'ziddy-mailchimp/' );
+
+/**
  * ============
  * Dependencies
  * ============
  */
+require 'vendor/autoload.php';
 require_once 'includes/class-ziddy-mailchimp.php';
 
 /**

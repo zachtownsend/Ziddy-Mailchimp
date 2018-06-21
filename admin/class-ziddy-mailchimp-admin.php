@@ -106,7 +106,7 @@ class Ziddy_Mailchimp_Admin {
 	}
 
 	/**
-	 * Load the field template from either the plugin or the theme override
+	 * Load the field template
 	 *
 	 * @param  Array $args Arguments sent from `add_settings_field` function
 	 *
