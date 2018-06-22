@@ -3,22 +3,21 @@
 class Ziddy_Mailchimp_Public_Test extends WP_UnitTestCase {
 	protected $public;
 
-	protected $test_email_addresses;
+	protected $test_email_addresses = [
+		'jaffe@msn.com',
+		'stefano@verizon.net',
+		'natepuri@mac.com',
+		'bockelboy@outlook.com',
+	];
+
+	protected $test_email = 'test@test.com';
 
 	public function setUp() {
-		require_once ZIDDY_MAILCHIMP_PLUGIN_ROOT . 'vendor/autoload.php';
 		require_once ZIDDY_MAILCHIMP_PLUGIN_ROOT . 'public/class-ziddy-mailchimp-public.php';
 
 		update_option( ZIDDY_MAILCHIMP_SLUG . '_api_key', getenv('API_KEY') );
 		update_option( ZIDDY_MAILCHIMP_SLUG . '_list_id', getenv('LIST_ID') );
 		$this->public = new Ziddy_Mailchimp_Public();
-
-		$this->test_email_addresses = [
-			'jaffe@msn.com',
-			'stefano@verizon.net',
-			'natepuri@mac.com',
-			'bockelboy@outlook.com',
-		];
 	}
 
 	public function test_settings_are_correct () {
@@ -26,57 +25,52 @@ class Ziddy_Mailchimp_Public_Test extends WP_UnitTestCase {
 		$this->assertEquals( $this->public->list_id, getenv('LIST_ID') );
 	}
 
-	// public function test_that_getting_correct_lists () {
-	// 	$expected = array(
-	// 		'lists' => [
-	// 			'5d8a5e310f'
-	// 		],
-	// 		'total_items' => 2,
-
-	// 	);
-	// 	$this->assertEquals( $this->public->get_lists(), ['5d8a5e310f'] );
-	// }
-
 	public function test_add_subscribers() {
 		/**
-		 * Add the test emails
+		 * Add the test email
 		 */
-		foreach ( $this->test_email_addresses as $email ) {
-			$added = $this->public->add_user_to_list( $email );
-			$this->assertEquals( $added['email_address'], $email );
-		}
+		$result = $this->public->add_user_to_list( 'joebloggs@jodo.com' );
 
+		if ( is_array( $result ) ) {
+			$this->assertArrayHasKey( 'email_address', $result );
+			$this->assertEquals( $result['email_address'], 'joebloggs@jodo.com' );
+		} else {
+			$this->assertInstanceOf( WP_Error::class, $result );
+		}
 	}
 
 	public function test_handle_already_subscribed () {
-		$result = $this->public->add_user_to_list( $this->test_email_addresses[0] );
-		$this->assertEquals( $result->get_error_message(), 'Member Exists - jaffe@msn.com is already a list member. Use PUT to insert or update list members.' );
+		$result = $this->public->add_user_to_list( 'joebloggs@jodo.com' );
+		$this->assertInstanceOf( WP_Error::class, $result );
 	}
 
-	// public function test_delete_subscribes() {
-	// 	$MailChimp = $this->public->MailChimp;
-	// 	$list_id = $this->public->list_id;
+	public function test_fake_email () {
+		$result = $this->public->add_user_to_list( 'test@test.com' );
+		$this->assertInstanceOf( WP_Error::class, $result );
+	}
 
-	// 	foreach ( $this->test_email_addresses as $email ) {
-	// 		$subscriber_hash = $this->public->MailChimp->subscriberHash( $email );
+	public function test_delete_subscriber() {
+		$added = $this->public->add_user_to_list( 'joebloggs@jodo.com' );
 
-	// 		var_dump( "lists/$list_id/members/$subscriber_hash", $MailChimp->delete( "lists/$list_id/members/$subscriber_hash" ) );
-	// 	}
-	// }
+		if ( is_array( $added ) ) {
+			$result = $this->public->delete_user_from_list( 'joebloggs@jodo.com' );
+			$this->assertTrue( $result );
+		} else {
+			$this->assertInstanceOf( WP_Error::class, $added );
+		}
+	}
+
+	public function test_delete_subscriber_error () {
+		$result = $this->public->delete_user_from_list( 'joebloggs@jodo.com' );
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+	}
 
 	public static function tearDownAfterClass() {
 		$public = new Ziddy_Mailchimp_Public();
-		$list_id = get_option( ZIDDY_MAILCHIMP_SLUG . '_api_key' );
-		$test_email_addresses = [
-			'jaffe@msn.com',
-			'stefano@verizon.net',
-			'natepuri@mac.com',
-			'bockelboy@outlook.com',
-		];
+		$list_id = getenv('LIST_ID');
 
-		foreach ( $test_email_addresses as $email ) {
-			$subscriber_hash = $public->MailChimp->subscriberHash( $email );
-			$public->MailChimp->delete("lists/$list_id/members/$subscriber_hash");
-		}
+		$subscriber_hash = $public->MailChimp->subscriberHash( 'joebloggs@jodo.com' );
+		$public->MailChimp->delete("lists/$list_id/members/$subscriber_hash");
 	}
 }
