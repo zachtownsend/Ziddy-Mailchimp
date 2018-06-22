@@ -50,6 +50,11 @@ require_once 'includes/class-ziddy-mailchimp.php';
  * @since    1.0.0
  */
 function run_ziddy_mailchimp() {
+	if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+		$dotenv = new Dotenv\Dotenv(__DIR__);
+		$dotenv->load();
+	}
+
 	$plugin = new Ziddy_Mailchimp();
 	$plugin->run();
 }

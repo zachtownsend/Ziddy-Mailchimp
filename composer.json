@@ -1,5 +1,6 @@
 {
     "require": {
-        "drewm/mailchimp-api": "^2.5"
+        "drewm/mailchimp-api": "^2.5",
+        "vlucas/phpdotenv": "^2.4"
     }
 }
